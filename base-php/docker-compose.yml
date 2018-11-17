@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+    php:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        volumes:
+        - ./source:/var/www/code
+        depends_on:
+        - db
+    ngnix:
+        image: nginx
+        ports:
+        - 80:80
+        volumes:
+        - ./src:/var/www/code
+        - ./vhost:/etc/nginx/conf.d
+        depends_on:
+        - php
+    adminer:
+        image: adminer
+        ports:
+        - 81:8080
+        depends_on:
+        - db
+    db:
+        image: mariadb
+        environment:
+        - MYSQL_ROOT_PASSWORD=root
+        - MYSQL_DATABASE=blog
+        - MYSQL_USER=user
+        - MYSQL_PASSWORD=password123
